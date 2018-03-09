@@ -84,7 +84,7 @@ Add an externalState option with a list of external state with default values
 export const moduleA = createNamedReducer({
   moduleName: "moduleA",
   reducer: reducer,
-  externalState: { extState1: null, extState2: {}, extState3: "" }
+  externalState: { extState1: null, extState2: "" }
 });
 ```
 
@@ -93,7 +93,6 @@ In the main app link the external state to other modules. You can also link to s
 ```js
 moduleA.extState1 = moduleB.state1;
 moduleA.extState2 = moduleC.state1;
-moduleA.extState3 = localState => localState.state1 * getState(moduleC.state1);
 ```
 
 You can then access the external state from the local module
