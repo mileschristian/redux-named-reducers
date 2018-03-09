@@ -70,7 +70,7 @@ Add an externalState option with a list of external state with default values
 ```js
 export const moduleA = createNamedReducer({
   moduleName: 'moduleA',
-  reducer: reducer
+  reducer: reducer,
   externalState: { extState1: null, extState2: null } 
 })
 ```
