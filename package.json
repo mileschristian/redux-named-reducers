@@ -1,25 +1,23 @@
 {
-  "name": "redux-named-reducers",
-  "version": "1.0.1",
-  "description": "Access redux state anywhere in your code through named reducers",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mileschristian/redux-named-reducers.git"
-  },
-  "keywords": [
-    "access",
-    "redux",
-    "state",
-    "anywhere"
-  ],
-  "author": "Miles Christian Yu",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mileschristian/redux-named-reducers/issues"
-  },
-  "homepage": "https://github.com/mileschristian/redux-named-reducers#readme"
+	"name": "redux-named-reducers",
+	"version": "1.0.1",
+	"description": "Access redux state anywhere in your code through named reducers",
+	"main": "src/index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mileschristian/redux-named-reducers.git"
+	},
+	"keywords": ["access", "redux", "state", "mapDispatchToProps"],
+	"author": "Miles Christian Yu",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/mileschristian/redux-named-reducers/issues"
+	},
+	"homepage": "https://github.com/mileschristian/redux-named-reducers#readme",
+	"devDependencies": {
+		"eslint": "^4.18.2"
+	}
 }

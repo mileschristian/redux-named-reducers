@@ -1,7 +1,7 @@
 /**
  * Action type to request the named reducer to update it latestState reference
  */
-const _UPDATE_STATE_ACTION_TYPE_DONT_USE_ = "namedReducer/updateState";
+const _UPDATE_STATE_ACTION_TYPE_DONT_USE_ = 'namedReducer/updateState'
 
 /**
  * Creates a store enhancer that passes the latest state object to named reducers for every state change
@@ -10,24 +10,24 @@ const _UPDATE_STATE_ACTION_TYPE_DONT_USE_ = "namedReducer/updateState";
  * @returns {Function} the store enhancer
  */
 export function namedReducerEnhancer(...reducers) {
-  return createStore => (...args) => {
-    const store = createStore(...args);
+	return createStore => (...args) => {
+		const store = createStore(...args)
 
-    //listener to subscribe to the store
-    function listener() {
-      const state = store.getState();
-      //inform all named reducers of the state change
-      for (var i = 0, len = reducers.length; i < len; i++) {
-        reducers[i](state, { type: _UPDATE_STATE_ACTION_TYPE_DONT_USE_ });
-      }
-    }
+		//listener to subscribe to the store
+		function listener() {
+			const state = store.getState()
+			//inform all named reducers of the state change
+			for (var i = 0, len = reducers.length; i < len; i++) {
+				reducers[i](state, { type: _UPDATE_STATE_ACTION_TYPE_DONT_USE_ })
+			}
+		}
 
-    store.subscribe(listener);
+		store.subscribe(listener)
 
-    return {
-      ...store
-    };
-  };
+		return {
+			...store
+		}
+	}
 }
 
 /**
@@ -39,48 +39,48 @@ export function namedReducerEnhancer(...reducers) {
  * @returns {Function} the named reducer
  */
 export function createNamedReducer(options) {
-  const namedReducer = function(state, action) {
-    if (action.type === _UPDATE_STATE_ACTION_TYPE_DONT_USE_) {
-      //update the latestState reference
-      namedReducer.latestStateReference.latestState = state;
-      return state;
-    } else {
-      //call the normal reducer
-      return options.reducer(state, action);
-    }
-  };
+	const namedReducer = function(state, action) {
+		if (action.type === _UPDATE_STATE_ACTION_TYPE_DONT_USE_) {
+			//update the latestState reference
+			namedReducer.latestStateReference.latestState = state
+			return state
+		} else {
+			//call the normal reducer
+			return options.reducer(state, action)
+		}
+	}
 
-  //reference to the latest state
-  namedReducer.latestStateReference = {
-    latestState: null
-  };
-  //module name
-  namedReducer.moduleName = options.moduleName;
+	//reference to the latest state
+	namedReducer.latestStateReference = {
+		latestState: null
+	}
+	//module name
+	namedReducer.moduleName = options.moduleName
 
-  //create a selector for each first level property in the initial state
-  const localStateProperties = Object.keys(options.reducer(undefined, { type: undefined }));
+	//create a selector for each first level property in the initial state
+	const localStateProperties = Object.keys(options.reducer(undefined, { type: undefined }))
 
-  localStateProperties.forEach(e => {
-    namedReducer[e] = function(state) {
-      return state[e];
-    };
-    namedReducer[e].latestStateReference = namedReducer.latestStateReference;
-  });
+	localStateProperties.forEach(e => {
+		namedReducer[e] = function(state) {
+			return state[e]
+		}
+		namedReducer[e].latestStateReference = namedReducer.latestStateReference
+	})
 
-  //create a default value selector for each external state
-  if (options.externalState) {
-    const externalStateProperties = Object.keys(options.externalState);
+	//create a default value selector for each external state
+	if (options.externalState) {
+		const externalStateProperties = Object.keys(options.externalState)
 
-    externalStateProperties.forEach(e => {
-      namedReducer[e] = function() {
-        return options.externalState[e]; //return the default value
-      };
+		externalStateProperties.forEach(e => {
+			namedReducer[e] = function() {
+				return options.externalState[e] //return the default value
+			}
 
-      namedReducer[e].latestStateReference = { latestState: null };
-    });
-  }
+			namedReducer[e].latestStateReference = { latestState: null }
+		})
+	}
 
-  return namedReducer;
+	return namedReducer
 }
 
 /**
@@ -90,5 +90,5 @@ export function createNamedReducer(options) {
  * @returns {Any} the value returned by the selector
  */
 export function getState(selector) {
-  return selector(selector.latestStateReference.latestState);
+	return selector(selector.latestStateReference.latestState)
 }
