@@ -1,6 +1,6 @@
 {
 	"name": "redux-named-reducers",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Access redux state anywhere in your code through named reducers",
 	"main": "src/index.js",
 	"scripts": {
