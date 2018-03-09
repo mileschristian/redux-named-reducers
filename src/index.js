@@ -9,7 +9,7 @@ const _UPDATE_STATE_ACTION_TYPE_DONT_USE_ = "namedReducer/updateState";
  * @param {...Function} reducers the reducers to get the state changed action
  * @returns {Function} the store enhancer
  */
-export default function namedReducerEnhancer(...reducers) {
+export function namedReducerEnhancer(...reducers) {
   return createStore => (...args) => {
     const store = createStore(...args);
 
@@ -18,7 +18,7 @@ export default function namedReducerEnhancer(...reducers) {
       const state = store.getState();
       //inform all named reducers of the state change
       for (var i = 0, len = reducers.length; i < len; i++) {
-        reducers[i](store, { type: _UPDATE_STATE_ACTION_TYPE_DONT_USE_ });
+        reducers[i](state, { type: _UPDATE_STATE_ACTION_TYPE_DONT_USE_ });
       }
     }
 
