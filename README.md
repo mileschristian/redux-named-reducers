@@ -100,7 +100,6 @@ You can then access the external state from the local module
 ```js
 const extState1 = getState(moduleA.extState1);
 const extState2 = getState(moduleA.extState2);
-const extState3 = getState(moduleA.extState3);
 ```
 
 ## Notes
