@@ -42,7 +42,7 @@ export function createNamedReducer(options) {
 	const namedReducer = function(state, action) {
 		if (action.type === _UPDATE_STATE_ACTION_TYPE_DONT_USE_) {
 			//update the latestState reference
-			namedReducer.latestStateReference.latestState = state
+			namedReducer.latestState = state
 			return state
 		} else {
 			//call the normal reducer
@@ -51,32 +51,24 @@ export function createNamedReducer(options) {
 	}
 
 	//reference to the latest state
-	namedReducer.latestStateReference = {
-		latestState: null
-	}
+	namedReducer.latestState = null
+
 	//module name
 	namedReducer.moduleName = options.moduleName
 
 	//create a selector for each first level property in the initial state
-	const localStateProperties = Object.keys(options.reducer(undefined, { type: undefined }))
-
-	localStateProperties.forEach(e => {
+	Object.keys(options.reducer(undefined, { type: undefined })).forEach(e => {
 		namedReducer[e] = function(state) {
-			return state[e]
+			return state ? state[namedReducer.moduleName][e] : namedReducer.latestState[e]
 		}
-		namedReducer[e].latestStateReference = namedReducer.latestStateReference
 	})
 
 	//create a default value selector for each external state
 	if (options.externalState) {
-		const externalStateProperties = Object.keys(options.externalState)
-
-		externalStateProperties.forEach(e => {
+		Object.keys(options.externalState).forEach(e => {
 			namedReducer[e] = function() {
 				return options.externalState[e] //return the default value
 			}
-
-			namedReducer[e].latestStateReference = { latestState: null }
 		})
 	}
 
@@ -84,11 +76,11 @@ export function createNamedReducer(options) {
 }
 
 /**
- * Calls the selector from a named reducer passing the latest state object
+ * Calls the selector from a named reducer
  *
  * @param {Function} selector the selector to call
  * @returns {Any} the value returned by the selector
  */
 export function getState(selector) {
-	return selector(selector.latestStateReference.latestState)
+	return selector()
 }

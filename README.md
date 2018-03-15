@@ -42,8 +42,10 @@ Access the state from anywhere in your code
 import { getState } from "redux-named-reducers";
 import { moduleA } from "./moduleA";
 
-const state1 = getState(moduleA.state1);
-const state2 = getState(moduleA.state2);
+function someFunction() {
+  const state1 = getState(moduleA.state1);
+  const state2 = getState(moduleA.state2);
+}
 ```
 
 Use it to directly access state in mapDispatchToProps()
@@ -88,7 +90,7 @@ export const moduleA = createNamedReducer({
 });
 ```
 
-In the main app link the external state to other modules. You can also link to selectors.
+In the main app link the external state to other modules
 
 ```js
 moduleA.extState1 = moduleB.state1;
@@ -102,9 +104,24 @@ const extState1 = getState(moduleA.extState1);
 const extState2 = getState(moduleA.extState2);
 ```
 
+## Usage with reselect
+
+Each accessible state is just a selector so you can use it in reselect (since version 1.0.6 only)
+
+```js
+import { createSelector } from 'reselect';
+import { moduleA } from "./moduleA";
+
+const mySelector = createSelector(
+  [ moduleA.state1, moduleA.state2 ],
+  (state1, state2) => {
+    //selector logic goes here  
+  }
+```
+
 ## Notes
 
-getState() currently works for first level state properties only. To access deeper levels you must do:
+getState() currently works for first level state properties only. To access nested state you must do:
 
 ```js
 getState(moduleA.state1).subState1;
