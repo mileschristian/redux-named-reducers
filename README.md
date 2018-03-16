@@ -1,5 +1,7 @@
 # redux-named-reducers
 
+[![npm](https://img.shields.io/npm/v/redux-named-reducers.svg?style=flat-square)](https://www.npmjs.com/package/redux-named-reducers)
+
 Access redux state anywhere in your code through reducers
 
 ## Usage
@@ -21,7 +23,7 @@ function reducer(state = initialState, action) {
 }
 
 export const moduleA = createNamedReducer({
-  moduleName: "moduleA",
+  moduleName: "moduleA", //moduleName required only if using combineReducers
   reducer: reducer
 });
 ```
@@ -71,8 +73,8 @@ import { moduleA } from "./moduleA";
 import { moduleB } from "./moduleB";
 
 const rootReducer = combineReducers({
-  [moduleA.moduleName]: moduleA,
-  [moduleB.moduleName]: moduleB
+  [moduleA.moduleName]: moduleA, //must use moduleName to name the state
+  [moduleB.moduleName]: moduleB //must use moduleName to name the state
 });
 
 const store = createStore(rootReducer, compose(namedReducerEnhancer(rootReducer), ...otherEnhancersOrMiddleware));
@@ -91,10 +93,13 @@ export const moduleA = createNamedReducer({
 ```
 
 In the main app link the external state to other modules
+(Note: Since version v1.0.7 you must use linkState() to link states, old method is no longer supported)
 
 ```js
-moduleA.extState1 = moduleB.state1;
-moduleA.extState2 = moduleC.state1;
+import { linkState } from "redux-named-reducers";
+
+linkState(moduleA.extState1, moduleB.state1);
+linkState(moduleA.extState2, moduleC.state1);
 ```
 
 You can then access the external state from the local module
@@ -106,17 +111,26 @@ const extState2 = getState(moduleA.extState2);
 
 ## Usage with reselect
 
-Each accessible state is just a selector so you can use it in reselect (since version 1.0.6 only)
+Each named reducer state is just a selector so you can use it in reselect (since version 1.0.7 only)
 
 ```js
 import { createSelector } from 'reselect';
 import { moduleA } from "./moduleA";
+import { moduleB } from "./moduleB";
 
 const mySelector = createSelector(
-  [ moduleA.state1, moduleA.state2 ],
-  (state1, state2) => {
+  [ moduleA.state1, moduleA.extState1, moduleB.state2 ],
+  (state1, extState1, state3) => {
     //selector logic goes here  
-  }
+  }  
+```
+
+You can then use the selector as normal, or if you link it to your module then you can access it anywhere in your code
+
+```js
+linkState(moduleA.extDerivedState, mySelector);
+
+const derivedState = getState(moduleA.extDerivedState);
 ```
 
 ## Notes
