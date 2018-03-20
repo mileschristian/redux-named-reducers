@@ -14,8 +14,8 @@ Create a named reducer
 import { createNamedReducer } from "redux-named-reducers";
 
 const initialState = {
-  state1: "",
-  state2: ""
+  state1: "default1",
+  state2: "default2"
 };
 
 function reducer(state = initialState, action) {
@@ -23,7 +23,7 @@ function reducer(state = initialState, action) {
 }
 
 export const moduleA = createNamedReducer({
-  moduleName: "moduleA", //moduleName required only if using combineReducers
+  moduleName: "moduleA", //optional
   reducer: reducer
 });
 ```
@@ -45,6 +45,7 @@ import { getState } from "redux-named-reducers";
 import { moduleA } from "./moduleA";
 
 function someFunction() {
+  const moduleName = moduleA.moduleName;
   const state1 = getState(moduleA.state1);
   const state2 = getState(moduleA.state2);
 }
@@ -73,8 +74,8 @@ import { moduleA } from "./moduleA";
 import { moduleB } from "./moduleB";
 
 const rootReducer = combineReducers({
-  [moduleA.moduleName]: moduleA, //must use moduleName to name the state
-  [moduleB.moduleName]: moduleB //must use moduleName to name the state
+  moduleA,
+  moduleB
 });
 
 const store = createStore(rootReducer, compose(namedReducerEnhancer(rootReducer), ...otherEnhancersOrMiddleware));
@@ -125,12 +126,12 @@ const mySelector = createSelector(
   }  
 ```
 
-You can then use the selector as normal, or if you link it to your module then you can access it anywhere in your code
+You can then use the selector as normal, or if you link it to your state then you can access it anywhere in your code
 
 ```js
-linkState(moduleA.extDerivedState, mySelector);
+linkState(moduleA.extState1, mySelector);
 
-const derivedState = getState(moduleA.extDerivedState);
+const derivedState = getState(moduleA.extState1);
 ```
 
 ## Notes
