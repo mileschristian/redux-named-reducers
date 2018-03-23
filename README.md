@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/redux-named-reducers.svg?style=flat-square)](https://www.npmjs.com/package/redux-named-reducers)
 
-Access redux state anywhere in your code through reducers
+Access redux state anywhere in your code through reducers, and optionally split your reducers into smaller 'reduce' functions that operate per action
 
 ## Usage
 
@@ -13,6 +13,7 @@ Create a named reducer
 ```js
 import { createNamedReducer } from "redux-named-reducers";
 
+//define all the state you will access in initial state
 const initialState = {
   state1: "default1",
   state2: "default2"
@@ -23,7 +24,7 @@ function reducer(state = initialState, action) {
 }
 
 export const moduleA = createNamedReducer({
-  moduleName: "moduleA", //optional
+  moduleName: "moduleA", //optional module name
   reducer: reducer
 });
 ```
@@ -61,6 +62,42 @@ const mapDispatchToProps = dispatch => {
     }
   };
 };
+```
+
+## Alternate method of declaring reducers
+
+Create a named reducer passing an initial state option
+
+```js
+import { createNamedReducer } from "redux-named-reducers";
+
+export const moduleA = createNamedReducer({
+  initialState: initialState
+});
+```
+
+Create a reducer for each action or group of actions using 'reduce' function
+
+```js
+//notice no need for '...state' just return the states which changed
+moduleA.reduce(actions.ACTION1, action => {
+  state1: action.param1,
+  state2: action.param2
+})
+
+//if you are just changing state to a constant you can return an object directly
+moduleA.reduce(actions.ACTION2, { state1: "nextState"} )
+
+//multiple actions supported
+moduleA.reduce([actions.ACTION3, actions.ACTION4], { state2: "nextState"} )
+
+//...as well as 'redux-actions' like action creators that have a toString() method
+moduleA.reduce(myActionCreator1, { state1: "nextState"} )
+
+//'state' is not given because you can access it using the getState() method
+moduleA.reduce(toggleState1, () => ({
+  state1: !getState(moduleA.state1)
+})
 ```
 
 ## Usage with combineReducers
@@ -121,7 +158,7 @@ import { moduleB } from "./moduleB";
 
 const mySelector = createSelector(
   [ moduleA.state1, moduleA.extState1, moduleB.state2 ],
-  (state1, extState1, state3) => {
+  (state1, extState1, state2) => {
     //selector logic goes here  
   }  
 ```
