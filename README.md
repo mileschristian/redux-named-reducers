@@ -24,7 +24,7 @@ function reducer(state = initialState, action) {
 }
 
 export const moduleA = createNamedReducer({
-  moduleName: "moduleA", //optional module name
+  moduleName: "moduleA",
   reducer: reducer
 });
 ```
@@ -36,7 +36,7 @@ import { createStore, compose } from "redux";
 import { namedReducerEnhancer } from "redux-named-reducers";
 import { moduleA } from "./moduleA";
 
-const store = createStore(moduleA, compose(namedReducerEnhancer(moduleA), ...otherEnhancersOrMiddleware));
+const store = createStore(moduleA, compose(namedReducerEnhancer(moduleA.reducer), ...otherEnhancersOrMiddleware));
 ```
 
 Access the state from anywhere in your code
@@ -111,8 +111,8 @@ import { moduleA } from "./moduleA";
 import { moduleB } from "./moduleB";
 
 const rootReducer = combineReducers({
-  moduleA,
-  moduleB
+  [moduleA.moduleName]: moduleA.reducer,
+  [moduleB.moduleName]: moduleB.reducer
 });
 
 const store = createStore(rootReducer, compose(namedReducerEnhancer(rootReducer), ...otherEnhancersOrMiddleware));

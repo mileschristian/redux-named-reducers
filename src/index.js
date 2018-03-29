@@ -39,7 +39,10 @@ export function namedReducerEnhancer(...reducers) {
  * @returns {Function} the named reducer
  */
 export function createNamedReducer(options) {
-	const namedReducer = function(state = options.initialState, action) {
+	const namedReducer = {}
+
+	//reference to the reducer
+	namedReducer.reducer = function(state = options.initialState, action) {
 		if (action.type === _UPDATE_STATE_ACTION_TYPE_DONT_USE_) {
 			//update the latestState reference
 			namedReducer._latestState = action.latestState
@@ -50,7 +53,7 @@ export function createNamedReducer(options) {
 			return options.reducer(state, action)
 		} else {
 			//call the assigned reducers
-			return namedReducer._reducer.hasOwnProperty(action.type) ? namedReducer._reducer[action.type](action) : state
+			return namedReducer._reducerList.hasOwnProperty(action.type) ? namedReducer._reducerList[action.type](action) : state
 		}
 	}
 
@@ -61,7 +64,7 @@ export function createNamedReducer(options) {
 	//reference to the moduleName
 	namedReducer.moduleName = options.moduleName
 	//reference to the reducer list
-	namedReducer._reducer = {}
+	namedReducer._reducerList = {}
 
 	//reduce function
 	namedReducer.reduce = function(actions, nextState) {
@@ -87,9 +90,9 @@ export function createNamedReducer(options) {
 					  }
 
 			if (actionType) {
-				namedReducer._reducer[actionType] = reduce
+				namedReducer._reducerList[actionType] = reduce
 			} else {
-				namedReducer._reducer[e.toString()] = reduce
+				namedReducer._reducerList[e.toString()] = reduce
 			}
 		})
 	}
